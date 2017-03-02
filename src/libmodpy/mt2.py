@@ -16,6 +16,7 @@ class MT2(Common):
         if self.identifier != "MT20":
             raise ValueError("Not a valid MadTracker 2 file")
         
+        # Metadata
         self.module_version = self.file[8:9].decode()
         self.tracker_name = self.file[10:42].decode().replace("\x00", "")
         self.module_title = self.file[42:106].decode().replace("\x00", "")
@@ -26,3 +27,12 @@ class MT2(Common):
         self.samples_per_tick = self.file[114]
         self.ticks_per_line = self.file[116]
         self.lines_per_beat = self.file[117]
+        self.number_of_instruments = self.file[122:124]
+        self.number_of_samples = self.file[124]
+        
+        # Flags
+        self.packed_patterns = self.file[118]
+        self.automation = self.file[119]
+        self.pattern_order = [hex(i) for i in self.file[126:127 + self.number_of_patterns]]
+        # Very "hackish" right now, I know.
+        
